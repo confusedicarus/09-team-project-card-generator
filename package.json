@@ -1,6 +1,28 @@
 {
+  "scripts": {
+    "test": "jest"
+  },
   "dependencies": {
     "inquirer": "^8.2.0",
     "jest": "^27.5.1"
-  }
+  },
+  "name": "09-nodejs-team-generator",
+  "description": "## Description     When a user runs the app and answers prompts, elements are generated and added to an html page to display members of a project team.",
+  "version": "1.0.0",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/confusedicarus/09-team-project-card-generator.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/confusedicarus/09-team-project-card-generator/issues"
+  },
+  "homepage": "https://github.com/confusedicarus/09-team-project-card-generator#readme"
 }

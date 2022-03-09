@@ -1,3 +1,4 @@
+//global declrations
 const inquirer = require("inquirer");
 const fs = require("fs");
 
@@ -9,6 +10,7 @@ const teamMembers = [];
 let manager = "";
 let teamTitle = "";
 
+//starts the app and begins with manager credentials
 function initData() {
   inquirer
     .prompt([
@@ -51,6 +53,36 @@ function initData() {
       return otherEmployeeData();
     });
 }
+//card creation for interns and engineers
+function assembleTeam(employee) {
+  if (employee.getRole() === "Intern") {
+    var internCard = fs.readFileSync(`./html-templates/intern.html`, `utf8`);
+    internCard = internCard.replace(`{{name}}`, employee.getName());
+    internCard = internCard.replace(`{{eID}}`, employee.getID());
+    internCard = internCard.replace(`{{role}}`, employee.getRole());
+    internCard = internCard.replace(`{{email}}`, employee.getEmail());
+    internCard = internCard.replace(`{{emailAnchor}}`, employee.getEmail());
+    internCard = internCard.replace(`{{school}}`, employee.getSchool());
+    return internCard;
+  } else if (employee.getRole() === "Engineer") {
+    var engineerCard = fs.readFileSync(
+      `./html-templates/engineer.html`,
+      `utf8`
+    );
+    engineerCard = engineerCard.replace(`{{name}}`, employee.getName());
+    engineerCard = engineerCard.replace(`{{eID}}`, employee.getID());
+    engineerCard = engineerCard.replace(`{{role}}`, employee.getRole());
+    engineerCard = engineerCard.replace(`{{email}}`, employee.getEmail());
+    engineerCard = engineerCard.replace(`{{emailAnchor}}`, employee.getEmail());
+    engineerCard = engineerCard.replace(`{{gitHub}}`, employee.getGitHub());
+    engineerCard = engineerCard.replace(
+      `{{gitHubAnchor}}`,
+      employee.getGitHub()
+    );
+    return engineerCard;
+  }
+}
+//begins prompts for other employees and creates manager card.
 function otherEmployeeData() {
   inquirer
     .prompt([
@@ -118,19 +150,16 @@ function otherEmployeeData() {
         main = main.replace(`{{teamTitle}}`, teamTitle);
         main = main.replace(`{{teamName}}`, teamTitle);
 
-        var leadCard = fs.readFileSync(
-          "./html-templates/manager.html",
-          "utf8"
-        );
+        var leadCard = fs.readFileSync("./html-templates/manager.html", "utf8");
 
         leadCard = leadCard.replace(`{{name}}`, manager.getName());
         leadCard = leadCard.replace(`{{role}}`, manager.getRole());
         leadCard = leadCard.replace(`{{eID}}`, manager.getID());
         leadCard = leadCard.replace(`{{email}}`, manager.getEmail());
-        leadCard = leadCard.replace(
-          `{{officeNum}}`,
-          manager.getOfficeNum()
-        );
+        leadCard = leadCard.replace(`{{emailAnchor}}`, manager.getEmail());
+        leadCard = leadCard.replace(`{{officeNum}}`, manager.getOfficeNum());
+
+        //cards being appended and written to the html
         var cards = leadCard;
         for (var i = 0; i < teamMembers.length; i++) {
           var employee = teamMembers[i];
@@ -145,26 +174,4 @@ function otherEmployeeData() {
     });
 }
 
-function assembleTeam(employee) {
-  if (employee.getRole() === "Intern") {
-    var internCard = fs.readFileSync(`./html-templates/intern.html`, `utf8`);
-    internCard = internCard.replace(`{{name}}`, employee.getName());
-    internCard = internCard.replace(`{{eID}}`, employee.getID());
-    internCard = internCard.replace(`{{role}}`, employee.getRole());
-    internCard = internCard.replace(`{{email}}`, employee.getEmail());
-    internCard = internCard.replace(`{{school}}`, employee.getSchool());
-    return internCard;
-  } else if (employee.getRole() === "Engineer") {
-    var engineerCard = fs.readFileSync(
-      `./html-templates/engineer.html`,
-      `utf8`
-    );
-    engineerCard = engineerCard.replace(`{{name}}`, employee.getName());
-    engineerCard = engineerCard.replace(`{{eID}}`, employee.getID());
-    engineerCard = engineerCard.replace(`{{role}}`, employee.getRole());
-    engineerCard = engineerCard.replace(`{{email}}`, employee.getEmail());
-    engineerCard = engineerCard.replace(`{{gitHub}}`, employee.getGitHub());
-    return engineerCard;
-  }
-}
 initData();
