@@ -1,0 +1,27 @@
+body {
+  background-color: #003049;
+  color: #eae2b7;
+}
+footer {
+  text-align: center;
+}
+.card {
+    background-color: #f77f00;
+    border: solid 2px #fcbf49;
+}
+.list-group{
+    border: solid 2px #d62828;
+}
+.rows {
+  display: flex;
+  justify-content: space-between;
+}
+#teamName {
+  text-align: center;
+}
+
+@media screen and (max-width: 720px) {
+  .rows {
+    flex-direction: column;
+  }
+}

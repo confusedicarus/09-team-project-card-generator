@@ -47,7 +47,6 @@ function initData() {
         initData.officeNum
       );
       teamTitle = initData.teamTitle;
-      //   console.log(initData);
       console.log("Next: Other Employee Data");
       return otherEmployeeData();
     });
@@ -80,13 +79,13 @@ function otherEmployeeData() {
         type: "input",
         message: "GitHub Username?",
         name: "gitHub",
-        when: (userInput) => userInput.roleSelection === "Engineer",
+        when: (userInput) => userInput.employeeRole === "Engineer",
       },
       {
         type: "input",
         message: "School attended?",
         name: "school",
-        when: (userInput) => userInput.roleSelection === "Intern",
+        when: (userInput) => userInput.employeeRole === "Intern",
       },
       {
         type: "confirm",
@@ -95,7 +94,7 @@ function otherEmployeeData() {
       },
     ])
     .then((employeeData) => {
-      if (employeeData.roleSelection === "Engineer") {
+      if (employeeData.employeeRole === "Engineer") {
         const employee = new Engineer(
           employeeData.employeeName,
           employeeData.employeeEmail,
@@ -103,7 +102,7 @@ function otherEmployeeData() {
           employeeData.gitHub
         );
         teamMembers.push(employee);
-      } else if (employeeData.roleSelection === "Intern") {
+      } else if (employeeData.employeeRole === "Intern") {
         const employee = new Intern(
           employeeData.employeeName,
           employeeData.employeeEmail,
@@ -119,21 +118,20 @@ function otherEmployeeData() {
         main = main.replace(`{{teamTitle}}`, teamTitle);
         main = main.replace(`{{teamName}}`, teamTitle);
 
-        var managerCard = fs.readFileSync(
+        var leadCard = fs.readFileSync(
           "./html-templates/manager.html",
           "utf8"
         );
 
-        managerCard = managerCard.replace(`{{name}}`, manager.getName());
-        managerCard = managerCard.replace(`{{role}}`, manager.getRole());
-        managerCard = managerCard.replace(`{{eID}}`, manager.getID());
-        managerCard = managerCard.replace(`{{email}}`, manager.getEmail());
-        managerCard = managerCard.replace(
+        leadCard = leadCard.replace(`{{name}}`, manager.getName());
+        leadCard = leadCard.replace(`{{role}}`, manager.getRole());
+        leadCard = leadCard.replace(`{{eID}}`, manager.getID());
+        leadCard = leadCard.replace(`{{email}}`, manager.getEmail());
+        leadCard = leadCard.replace(
           `{{officeNum}}`,
           manager.getOfficeNum()
         );
-        //this isn't working. expected behavior: make cards based on the number of teamMembers -- actual behavior: creates only manager card
-        var cards = managerCard;
+        var cards = leadCard;
         for (var i = 0; i < teamMembers.length; i++) {
           var employee = teamMembers[i];
           cards += assembleTeam(employee);
@@ -151,18 +149,22 @@ function assembleTeam(employee) {
   if (employee.getRole() === "Intern") {
     var internCard = fs.readFileSync(`./html-templates/intern.html`, `utf8`);
     internCard = internCard.replace(`{{name}}`, employee.getName());
-    internCard = internCard.replace(`{{role}}`, employee.getName());
-    internCard = internCard.replace(`{{email}}`, employee.getName());
-    internCard = internCard.replace(`{{school}}`, employee.getName());
+    internCard = internCard.replace(`{{eID}}`, employee.getID());
+    internCard = internCard.replace(`{{role}}`, employee.getRole());
+    internCard = internCard.replace(`{{email}}`, employee.getEmail());
+    internCard = internCard.replace(`{{school}}`, employee.getSchool());
+    return internCard;
   } else if (employee.getRole() === "Engineer") {
     var engineerCard = fs.readFileSync(
       `./html-templates/engineer.html`,
       `utf8`
     );
     engineerCard = engineerCard.replace(`{{name}}`, employee.getName());
+    engineerCard = engineerCard.replace(`{{eID}}`, employee.getID());
     engineerCard = engineerCard.replace(`{{role}}`, employee.getRole());
     engineerCard = engineerCard.replace(`{{email}}`, employee.getEmail());
     engineerCard = engineerCard.replace(`{{gitHub}}`, employee.getGitHub());
+    return engineerCard;
   }
 }
 initData();
