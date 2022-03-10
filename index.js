@@ -90,7 +90,7 @@ function otherEmployeeData() {
         type: "list",
         message: "What is this employee's role?",
         name: "employeeRole",
-        choices: ["Intern", "Engineer"],
+        choices: ["Engineer", "Intern"],
       },
       {
         type: "input",
@@ -149,9 +149,7 @@ function otherEmployeeData() {
         var main = fs.readFileSync(`./html-templates/main.html`, "utf8");
         main = main.replace(`{{teamTitle}}`, teamTitle);
         main = main.replace(`{{teamName}}`, teamTitle);
-
         var leadCard = fs.readFileSync("./html-templates/manager.html", "utf8");
-
         leadCard = leadCard.replace(`{{name}}`, manager.getName());
         leadCard = leadCard.replace(`{{role}}`, manager.getRole());
         leadCard = leadCard.replace(`{{eID}}`, manager.getID());
@@ -164,11 +162,9 @@ function otherEmployeeData() {
         for (var i = 0; i < teamMembers.length; i++) {
           var employee = teamMembers[i];
           cards += assembleTeam(employee);
-          console.log(teamMembers);
         }
         main = main.replace(`{{cards}}`, cards);
-        fs.writeFileSync(`./output/team-project-profile.html`, main);
-        console.log(employeeData);
+        fs.writeFileSync(`./dist/team-project-profile.html`, main);
         console.log("team-project-profile.html has been created");
       }
     });
