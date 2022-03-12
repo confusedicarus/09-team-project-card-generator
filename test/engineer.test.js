@@ -33,7 +33,7 @@ describe("Engineer", () => {
     });
   });
   describe("getGitHub", () => {
-    it("should return ID", () => {
+    it("should return gitHub info", () => {
       const user = new Engineer(name, email, eID, gitHub);
       expect(user.gitHub).toEqual(user.getGitHub());
     });
