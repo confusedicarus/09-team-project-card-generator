@@ -28,7 +28,6 @@ function initData() {
         type: "input",
         message: "What's the Lead's Employee ID Number?",
         name: "managerID",
-        choice: ["Manager", "Engineer", "Intern", "Finish Selection"],
       },
       {
         type: "input",
@@ -156,7 +155,6 @@ function otherEmployeeData() {
         leadCard = leadCard.replace(`{{email}}`, manager.getEmail());
         leadCard = leadCard.replace(`{{emailAnchor}}`, manager.getEmail());
         leadCard = leadCard.replace(`{{officeNum}}`, manager.getOfficeNum());
-
         //cards being appended and written to the html
         var cards = leadCard;
         for (var i = 0; i < teamMembers.length; i++) {
