@@ -9,7 +9,108 @@ const Intern = require("./lib/intern");
 const teamMembers = [];
 let manager = "";
 let teamTitle = "";
-
+function managerHTML(manager) {
+  return `<div class="card" style="width: 18rem">
+<div class="card-body">
+  <h5 class="card-title">${manager.getName()}</h5>
+  <h6 class="card-subtitle mb-2 text-muted">${manager.getRole()}</h6>
+  <ul class="list-group">
+    <li class="list-group-item">ID: ${manager.getID()}</li>
+    <li class="list-group-item"><a href="mailto:${manager.getEmail()}">${manager.getEmail()}</a></li>
+    <li class="list-group-item">Office Number: ${manager.getOfficeNum()}</li>
+  </ul>
+</div>
+</div>`;
+}
+function engineerHTML(engineer) {
+  return `<div class="card" style="width: 18rem">
+  <div class="card-body">
+    <h5 class="card-title">${engineer.getName()}</h5>
+    <h6 class="card-subtitle mb-2 text-muted">${engineer.getRole()}</h6>
+    <ul class="list-group">
+      <li class="list-group-item">ID: ${engineer.getID()}</li>
+      <li class="list-group-item">
+        <a href="mailto:${engineer.getEmail()}">${engineer.getEmail()}</a>
+      </li>
+      <li class="list-group-item">
+        <a href="https://github.com/${engineer.getGitHub()}">GitHub: ${engineer.getGitHub()}</a>
+      </li>
+    </ul>
+  </div>
+</div>
+`;
+}
+function internHTML(intern) {
+  return `<div class="card" style="width: 18rem">
+  <div class="card-body">
+    <h5 class="card-title">${intern.getName()}</h5>
+    <h6 class="card-subtitle mb-2 text-muted">${intern.getRole()}</h6>
+    <ul class="list-group">
+      <li class="list-group-item">ID: ${intern.getID()}</li>
+      <li class="list-group-item">
+        <a href="mailto:${intern.getEmail()}">${intern.getEmail()}</a>
+      </li>
+      <li class="list-group-item">School: ${intern.getSchool()}</li>
+      </li>
+    </ul>
+  </div>
+</div>
+`;
+}
+function mainHTML() {
+  return `<!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+        crossorigin="anonymous"
+      />
+      <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"
+      ></script>
+      <link rel="stylesheet" href="./style.css" />
+      <title>${teamTitle}</title>
+    </head>
+    <body>
+      <header>
+        <h1 id="teamName">${teamTitle}</h1>
+      </header>
+      <div class="container">
+        <div class="rows">${cardGen()}</div>
+      </div>
+      <footer>
+        Team Project HTML Generator by
+        <a href="https://github.com/confusedicarus">Rick M</a>
+      </footer>
+    </body>
+  </html>
+  `;
+}
+function cardGen() {
+  let allMemHTML = "";
+  for (var i = 0; i < teamMembers.length; i++) {
+    let memberRole = teamMembers[i].getRole();
+    if (memberRole === "Manager") {
+      console.log(memberRole);
+      allMemHTML += managerHTML(teamMembers[i]);
+    } else if (memberRole === "Engineer") {
+      console.log(memberRole);
+      allMemHTML += engineerHTML(teamMembers[i]);
+    } else {
+      console.log(memberRole);
+      allMemHTML += internHTML(teamMembers[i]);
+    }
+  }
+  console.log(allMemHTML);
+  return allMemHTML;
+}
 //starts the app and begins with manager credentials
 function initData() {
   inquirer
@@ -49,37 +150,9 @@ function initData() {
       );
       teamTitle = initData.teamTitle;
       console.log("Next: Other Employee Data");
+      teamMembers.push(manager);
       return otherEmployeeData();
     });
-}
-//card creation for interns and engineers
-function assembleTeam(employee) {
-  if (employee.getRole() === "Intern") {
-    var internCard = fs.readFileSync(`./html-templates/intern.html`, `utf8`);
-    internCard = internCard.replace(`{{name}}`, employee.getName());
-    internCard = internCard.replace(`{{eID}}`, employee.getID());
-    internCard = internCard.replace(`{{role}}`, employee.getRole());
-    internCard = internCard.replace(`{{email}}`, employee.getEmail());
-    internCard = internCard.replace(`{{emailAnchor}}`, employee.getEmail());
-    internCard = internCard.replace(`{{school}}`, employee.getSchool());
-    return internCard;
-  } else if (employee.getRole() === "Engineer") {
-    var engineerCard = fs.readFileSync(
-      `./html-templates/engineer.html`,
-      `utf8`
-    );
-    engineerCard = engineerCard.replace(`{{name}}`, employee.getName());
-    engineerCard = engineerCard.replace(`{{eID}}`, employee.getID());
-    engineerCard = engineerCard.replace(`{{role}}`, employee.getRole());
-    engineerCard = engineerCard.replace(`{{email}}`, employee.getEmail());
-    engineerCard = engineerCard.replace(`{{emailAnchor}}`, employee.getEmail());
-    engineerCard = engineerCard.replace(`{{gitHub}}`, employee.getGitHub());
-    engineerCard = engineerCard.replace(
-      `{{gitHubAnchor}}`,
-      employee.getGitHub()
-    );
-    return engineerCard;
-  }
 }
 //begins prompts for other employees and creates manager card.
 function otherEmployeeData() {
@@ -145,24 +218,7 @@ function otherEmployeeData() {
       if (employeeData.newEmployee === true) {
         otherEmployeeData();
       } else {
-        var main = fs.readFileSync(`./html-templates/main.html`, "utf8");
-        main = main.replace(`{{teamTitle}}`, teamTitle);
-        main = main.replace(`{{teamName}}`, teamTitle);
-        var leadCard = fs.readFileSync("./html-templates/manager.html", "utf8");
-        leadCard = leadCard.replace(`{{name}}`, manager.getName());
-        leadCard = leadCard.replace(`{{role}}`, manager.getRole());
-        leadCard = leadCard.replace(`{{eID}}`, manager.getID());
-        leadCard = leadCard.replace(`{{email}}`, manager.getEmail());
-        leadCard = leadCard.replace(`{{emailAnchor}}`, manager.getEmail());
-        leadCard = leadCard.replace(`{{officeNum}}`, manager.getOfficeNum());
-        //cards being appended and written to the html
-        var cards = leadCard;
-        for (var i = 0; i < teamMembers.length; i++) {
-          var employee = teamMembers[i];
-          cards += assembleTeam(employee);
-        }
-        main = main.replace(`{{cards}}`, cards);
-        fs.writeFileSync(`./dist/team-project-profile.html`, main);
+        fs.writeFileSync(`./dist/team-project-profile.html`, mainHTML());
         console.log("team-project-profile.html has been created");
       }
     });
